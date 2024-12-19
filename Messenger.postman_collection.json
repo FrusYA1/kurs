@@ -1,0 +1,706 @@
+{
+	"info": {
+		"_postman_id": "32defa44-f7af-4a28-b58e-694c06bbb6f5",
+		"name": "Messenger",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29149390"
+	},
+	"item": [
+		{
+			"name": "Открытые запросы",
+			"item": [
+				{
+					"name": "Тестовый запрос",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/test",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"test"
+							]
+						},
+						"description": "Тестовый запрос для проверки работоспособности системы"
+					},
+					"response": []
+				},
+				{
+					"name": "Авторизация",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json = pm.response.json()\r",
+									"if (json.data){\r",
+									"    pm.collectionVariables.set(\"access\", json.data.jwt.accessToken);\r",
+									"    pm.collectionVariables.set(\"refresh\", json.data.jwt.refreshToken);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"john.doe@example.com\",\r\n    \"password\": \"password1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/auth",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"auth"
+							]
+						},
+						"description": "Авторизация пользователя. Параметры запроса:\n\n| **Поле** | **Значение** |\n| --- | --- |\n| email | Почта пользователя |\n| password | Пароль |"
+					},
+					"response": []
+				},
+				{
+					"name": "Регистрация",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\": \"Amelia\",\r\n    \"lastname\": \"Dawson\",\r\n    \"email\": \"amelia.dawson@example.com\",\r\n    \"password\": \"password11\",\r\n    \"passwordConfirm\": \"password11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/reg",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"reg"
+							]
+						},
+						"description": "Регистрация пользователя. Параметры запроса:\n\n| **Поле** | **Значение** |\n| --- | --- |\n| firstname | Имя пользователя |\n| lastname | Фамилия пользоватля |\n| email | Почта пользователя |\n| password | Пароль |\n| passwordConfirm | Подтверждение пароля |"
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление токена",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json = pm.response.json()\r",
+									"if (json.data){\r",
+									"    pm.collectionVariables.set(\"access\", json.data.accessToken);\r",
+									"    pm.collectionVariables.set(\"refresh\", json.data.refreshToken);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refreshToken\": \"{{refresh}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/refresh",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"refresh"
+							]
+						},
+						"description": "Выдаёт новую пару токенов. Параметры запроса:\n\n| **Поле** | **Значение** |\n| --- | --- |\n| refreshToken | Обновляющий токен, выданный после авторизации или предыдущего обновления |"
+					},
+					"response": []
+				}
+			],
+			"description": "Этот раздел содержит запросы, для которых не требуется авторизация"
+		},
+		{
+			"name": "Взаимодействие с пользователем",
+			"item": [
+				{
+					"name": "Получение данных пользователя",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/{{user_id}}/info",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}",
+								"info"
+							]
+						},
+						"description": "Информация о конкретном пользователе. Содержит идентификтор, почту, имя, фамилию и дату создания пользователя"
+					},
+					"response": []
+				},
+				{
+					"name": "Редактирование пользователя",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Addams\",\r\n    \"email\": \"john.addams@example.com\",\r\n    \"password\": \"password1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/{{user_id}}/edit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}",
+								"edit"
+							]
+						},
+						"description": "Изменение данных конкретного пользователя. Содержит следующие поля:\n\n| **Поле** | **Значение** |\n| --- | --- |\n| firstname | Имя пользователя |\n| lastname | Фамилия пользоватля |\n| email | Почта пользователя |\n| password | Пароль |\n\nВ теле запроса должны быть указаны **ВСЕ** параметры и их значения. Пустое значение перезапишет текущую информацию"
+					},
+					"response": []
+				},
+				{
+					"name": "Блокировка пользователя",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/{{user_id}}/block/{{blocked_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}",
+								"block",
+								"{{blocked_id}}"
+							]
+						},
+						"description": "Блокирует пользователя. Заблокированный пользователь не может отправлять сообщения"
+					},
+					"response": []
+				},
+				{
+					"name": "Разблокировка пользователя",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/{{user_id}}/unblock/{{blocked_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}",
+								"unblock",
+								"{{blocked_id}}"
+							]
+						},
+						"description": "Снимает блокировку с пользователя"
+					},
+					"response": []
+				},
+				{
+					"name": "Отправка сообщения",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"message\": \"Привет\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/{{user_id}}/send/{{recipient_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}",
+								"send",
+								"{{recipient_id}}"
+							]
+						},
+						"description": "Отправляет сообщение указанному пользователю. Параметры запроса:\n\n| **Поле** | **Значение** |\n| --- | --- |\n| message | Отправляемое сообщение |"
+					},
+					"response": []
+				},
+				{
+					"name": "Отмена отправки сообщения",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/{{user_id}}/unsend/{{recipient_id}}/{{message_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}",
+								"unsend",
+								"{{recipient_id}}",
+								"{{message_id}}"
+							]
+						},
+						"description": "Удаляет отправленное сообщение"
+					},
+					"response": []
+				},
+				{
+					"name": "Получение сообщений",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/{{user_id}}/messages/{{contact_id}}?count=10&page=0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}",
+								"messages",
+								"{{contact_id}}"
+							],
+							"query": [
+								{
+									"key": "count",
+									"value": "10"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						},
+						"description": "Получение count сообщений диалога с другим пользователем начиная с page\\*count в порядке отправки. Если параметры не указаны, используются следующие значения по умолчанию:\n\ncount = 20\n\npage = 0"
+					},
+					"response": []
+				}
+			],
+			"description": "В этом разделе описаны сценарии взаимодействия с другим пользователем"
+		},
+		{
+			"name": "Взаимодействие с чатом",
+			"item": [
+				{
+					"name": "Создание чата",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Чат 4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/{{user_id}}/chat/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}",
+								"chat",
+								"create"
+							]
+						},
+						"description": "Создаёт новый чат. Параметры запроса:\n\n| **Поле** | **Значение** |\n| --- | --- |\n| name | Название чата |"
+					},
+					"response": []
+				},
+				{
+					"name": "Получение информации о чате",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/{{user_id}}/chat/{{chat_id}}/info",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}",
+								"chat",
+								"{{chat_id}}",
+								"info"
+							]
+						},
+						"description": "Получение идентификатора администратора, названия, даты создания чата, а также всех его участников"
+					},
+					"response": []
+				},
+				{
+					"name": "Редактирование чата",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Новый чат 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/{{user_id}}/chat/{{chat_id}}/edit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}",
+								"chat",
+								"{{chat_id}}",
+								"edit"
+							]
+						},
+						"description": "Изменение чата. Параметры запроса:\n\n| **Поле** | **Значение** |\n| --- | --- |\n| name | Название чата |"
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление из чата",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/{{user_id}}/chat/{{chat_id}}/kick/{{kicked_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}",
+								"chat",
+								"{{chat_id}}",
+								"kick",
+								"{{kicked_id}}"
+							]
+						},
+						"description": "Удаляет пользователя из чата"
+					},
+					"response": []
+				},
+				{
+					"name": "Добавление в чат",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/{{user_id}}/chat/{{chat_id}}/add/{{added_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}",
+								"chat",
+								"{{chat_id}}",
+								"add",
+								"{{added_id}}"
+							]
+						},
+						"description": "Добавляет пользователя в чат"
+					},
+					"response": []
+				},
+				{
+					"name": "Отправка сообщения",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"message\": \"Привет\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/{{user_id}}/chat/{{chat_id}}/send",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}",
+								"chat",
+								"{{chat_id}}",
+								"send"
+							]
+						},
+						"description": "Отправляет сообщение в чат. Параметры запроса:\n\n| **Поле** | **Значение** |\n| --- | --- |\n| message | Отправляемое сообщение |"
+					},
+					"response": []
+				},
+				{
+					"name": "Отмена отправки сообщения",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/{{user_id}}/chat/{{chat_id}}/unsend/{{message_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}",
+								"chat",
+								"{{chat_id}}",
+								"unsend",
+								"{{message_id}}"
+							]
+						},
+						"description": "Отменяет отправку сообщения в чат по указанному идентификатору"
+					},
+					"response": []
+				},
+				{
+					"name": "Получение сообщений",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/{{user_id}}/chat/{{chat_id}}/messages?count=5&page=0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}",
+								"chat",
+								"{{chat_id}}",
+								"messages"
+							],
+							"query": [
+								{
+									"key": "count",
+									"value": "5"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						},
+						"description": "Получение count сообщений чата начиная с page\\*count в порядке отправки. Если параметры не указаны, используются следующие значения по умолчанию:\n\ncount = 20\n\npage = 0"
+					},
+					"response": []
+				}
+			],
+			"description": "Этот раздел содержит методы для взаимодействия с чатами"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "user_id",
+			"value": "1"
+		},
+		{
+			"key": "blocked_id",
+			"value": "2",
+			"type": "default"
+		},
+		{
+			"key": "recipient_id",
+			"value": "3",
+			"type": "default"
+		},
+		{
+			"key": "refresh",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "access",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "message_id",
+			"value": "1",
+			"type": "default"
+		},
+		{
+			"key": "contact_id",
+			"value": "3",
+			"type": "default"
+		},
+		{
+			"key": "chat_id",
+			"value": "1",
+			"type": "default"
+		},
+		{
+			"key": "kicked_id",
+			"value": "5",
+			"type": "default"
+		},
+		{
+			"key": "added_id",
+			"value": "5",
+			"type": "default"
+		}
+	]
+}
